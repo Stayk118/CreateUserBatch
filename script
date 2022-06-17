@@ -1,0 +1,112 @@
+# Import required modules
+import-module activedirectory
+
+# Import the csv file and begin the loop
+import-csv C:\Temp\USERS.csv | foreach {
+
+# Create required variables
+$firstname = $_.firstname
+$lastname = $_.lastname
+$username = $firstname + '.' + $lastname
+$company = $_.company
+$department = 'DEPARTMENT'
+$emaildomain = 'DOMAIN'
+$manager = (Get-ADUser -filter { DisplayName -eq $_.manager }).SamAccountName
+$upn = $userName.ToLower() + '@' + "$emailDomain"
+$OUPath = "OU PATH"
+$password = $_.password
+$Phone = "0" + $_.phone
+$securePassword = ConvertTo-SecureString $password -AsPlainText -Force
+
+# Create the array containing the users details
+$userparams = @{
+    Name                 = $firstname + " " + $lastname
+    GivenName            = $firstname
+    Surname              = $lastname
+    DisplayName          = $firstname + " " + $lastname
+    UserPrincipalName    = $upn
+    SamAccountName       = $userName.ToLower()
+    Path                 = $OUPath
+    Title                = $_.jobtitle
+    Description          = $_.jobtitle
+    Office               = $_.location
+    City                 = $_.location
+    Mobile               = $Phone
+    AccountPassword      = $securePassword
+    Manager              = $manager
+    Company              = $company
+    Department           = $department
+    Enabled              = $true
+}
+# Create the new user account
+new-aduser @userparams
+
+# Set the users companny
+set-aduser -Identity $userName -company $company
+
+# Set Ex-Attribute for Service Now
+set-aduser "$username" -Add @{extensionAttribute15 = "ATTRIBUTE15"}
+
+# Add to the basic required user groups
+Add-ADGroupMember -Identity 'GROUP1' -Members $userName
+Add-ADGroupMember -Identity 'GROUP2' -Members $userName
+Add-ADGroupMember -Identity 'GROUP3' -Members $userName
+Add-ADGroupMember -Identity 'GROUP4' -Members $userName
+Add-ADGroupMember -Identity 'GROUP5' -Members $userName
+Add-ADGroupMember -Identity 'GROUP6' -Members $userName
+Add-ADGroupMember -Identity 'GROUP7' -Members $userName
+Add-ADGroupMember -Identity 'GROUP8' -Members $userName
+Add-ADGroupMember -Identity 'GROUP9' -Members $userName
+Add-ADGroupMember -Identity 'GROUP0' -Members $username
+# Add to specific lists
+if ($region = "REGION1"){
+    Add-ADGroupMember -Identity "@REGION1" -Members $username
+}
+elseif ($region = "REGION2"){
+    Add-ADGroupMember -Identity "@REGION2" -Members $username
+}
+elseif ($region = "REGION3"){
+    Add-ADGroupMember -Identity "@REGION3" -Members $username
+}
+elseif ($region = "REGION4"){
+    Add-ADGroupMember -Identity "@REGION4" -Members $username
+}
+elseif ($region = "REGION5"){
+    Add-ADGroupMember -Identity "@REGION5" -Members $username
+}
+elseif ($region = "REGION6"){
+    Add-ADGroupMember -Identity "@REGION6" -Members $username
+}
+elseif ($region = "REGION7"){
+    Add-ADGroupMember -Identity "@REGION7" -Members $username
+}
+elseif ($region = "REGION8"){
+    Add-ADGroupMember -Identity "@REGION8" -Members $username
+}
+elseif ($region = "REGION9"){
+    Add-ADGroupMember -Identity "@REGION9" -Members $username
+}
+elseif ($region = "REGION0"){
+    Add-ADGroupMember -Identity "@REGION0" -Members $username
+}
+elseif ($region = "REGION11"){
+    Add-ADGroupMember -Identity "@REGION11" -Members $username
+}
+elseif ($region = "REGION12"){
+    Add-ADGroupMember -Identity "@REGION12" -Members $username
+}
+elseif ($company = "COMPANY1"){
+    Add-ADGroupMember -Identity "@COMPANY1" -Members $username
+}
+elseif ($company = "COMPANY2"){
+    Add-ADGroupMember -Identity "@COMPANY2" -Members $username
+}
+if ($_.jobtitle = "ROLE1"){
+    Add-ADGroupMember -Identity "@ROLE1" -Members $username
+}
+elseif ($_.Jobtitle = "ROLE2"){
+    Add-ADGroupMember -Identity "@ROLE2" -Members $username
+}
+
+Write-Host "Created user:" $username
+}
