@@ -16,6 +16,7 @@ $upn = $userName.ToLower() + '@' + "$emailDomain"
 $OUPath = "OU PATH"
 $password = $_.password
 $Phone = "0" + $_.phone
+$Region = $_.region
 $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
 
 # Create the array containing the users details
